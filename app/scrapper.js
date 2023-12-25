@@ -114,10 +114,7 @@ async function getChapter(slug, chapter) {
       const seriesTitle = $(".section-header-title.me-auto > .max-caracter-2")
         .text()
         .trim();
-      const chapterNumber = $(".section-header-title.me-auto > span")
-        .text()
-        .replace(/[^0-9.]/g, "")
-        .trim();
+      const chapterNumber = chapter;
       const imageChapters = [];
       $(".chapter-detail-novel-big-image.text-center img").each(
         (index, element) => {

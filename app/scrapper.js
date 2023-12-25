@@ -125,6 +125,7 @@ async function getChapter(slug, chapter) {
           imageChapters.push(imgSrc);
         }
       );
+      // Extract previous chapter URL and number
       const prevChapterBtn = $(
         ".chapter-player-options-right .cm-dropdown"
       ).prev();
@@ -132,10 +133,17 @@ async function getChapter(slug, chapter) {
         prevChapterBtn.length && prevChapterBtn.attr("href") !== "javascript:;"
           ? prevChapterBtn.attr("href")
           : null;
-      const prevChapterSlug = prevChapterUrl
-        ? prevChapterUrl.replace(`${baseURL}/`, "").replace("chapter-", "")
+      const prevChapterNumberMatch = prevChapterUrl
+        ? prevChapterUrl.match(/\/chapter-(\d+(?:\.\d+)*)\//)
+        : null;
+      const prevChapterNumber = prevChapterNumberMatch
+        ? prevChapterNumberMatch[1]
+        : null;
+      const prevChapterSlug = prevChapterNumber
+        ? slug + "/" + prevChapterNumber
         : null;
 
+      // Extract next chapter URL and number
       const nextChapterBtn = $(
         ".chapter-player-options-right .cm-dropdown"
       ).next();
@@ -143,9 +151,16 @@ async function getChapter(slug, chapter) {
         nextChapterBtn.length && nextChapterBtn.attr("href") !== "javascript:;"
           ? nextChapterBtn.attr("href")
           : null;
-      const nextChapterSlug = nextChapterUrl
-        ? nextChapterUrl.replace(`${baseURL}/`, "").replace("chapter-", "")
+      const nextChapterNumberMatch = nextChapterUrl
+        ? nextChapterUrl.match(/\/chapter-(\d+(?:\.\d+)*)\//)
         : null;
+      const nextChapterNumber = nextChapterNumberMatch
+        ? nextChapterNumberMatch[1]
+        : null;
+      const nextChapterSlug = nextChapterNumber
+        ? slug + "/" + nextChapterNumber
+        : null;
+
       const data = {
         seriesTitle,
         chapterNumber,
@@ -492,7 +507,7 @@ async function getMangaDirectory(alphabet) {
         };
         mangaList.push(mangaInfo);
       });
-      // myCache.set(`manga-directory-${alphabet}`, mangaList, 60 * 60 * 24);
+      myCache.set(`manga-directory-${alphabet}`, mangaList, 60 * 60 * 24);
       return {
         message: "success",
         data: mangaList,

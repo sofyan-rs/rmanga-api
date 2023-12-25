@@ -125,37 +125,33 @@ async function getChapter(slug, chapter) {
           imageChapters.push(imgSrc);
         }
       );
-      // Extract previous chapter URL and number
-      const prevChapterBtn = $(".cm-dropdown").prev();
+      const prevChapterBtn = $(
+        ".chapter-player-options-right .cm-dropdown"
+      ).prev();
       const prevChapterUrl =
         prevChapterBtn.length && prevChapterBtn.attr("href") !== "javascript:;"
           ? prevChapterBtn.attr("href")
           : null;
-      const prevChapterNumberMatch = prevChapterUrl
-        ? prevChapterUrl.match(/\/chapter-(\d+(?:\.\d+)*)\//)
-        : null;
-      const prevChapterNumber = prevChapterNumberMatch
-        ? prevChapterNumberMatch[1]
+      const prevChapterSlug = prevChapterUrl
+        ? prevChapterUrl.replace(`${baseURL}/`, "").replace("chapter-", "")
         : null;
 
-      // Extract next chapter URL and number
-      const nextChapterBtn = $(".cm-dropdown").next();
+      const nextChapterBtn = $(
+        ".chapter-player-options-right .cm-dropdown"
+      ).next();
       const nextChapterUrl =
         nextChapterBtn.length && nextChapterBtn.attr("href") !== "javascript:;"
           ? nextChapterBtn.attr("href")
           : null;
-      const nextChapterNumberMatch = nextChapterUrl
-        ? nextChapterUrl.match(/\/chapter-(\d+(?:\.\d+)*)\//)
-        : null;
-      const nextChapterNumber = nextChapterNumberMatch
-        ? nextChapterNumberMatch[1]
+      const nextChapterSlug = nextChapterUrl
+        ? nextChapterUrl.replace(`${baseURL}/`, "").replace("chapter-", "")
         : null;
       const data = {
         seriesTitle,
         chapterNumber,
         imageChapters,
-        prevChapterNumber,
-        nextChapterNumber,
+        prevChapterSlug,
+        nextChapterSlug,
       };
       myCache.set(`${slug}-${chapter}`, data, 60 * 60 * 24);
       return {
@@ -368,7 +364,7 @@ async function getMangaHome() {
         newMangaList,
         popularMangaList,
       };
-      myCache.set("manga-home", items, 60);
+      myCache.set("manga-home", data, 60);
       return {
         message: "success",
         data,
@@ -480,7 +476,7 @@ async function getMangaDirectory(alphabet) {
         const slug = $(this)
           .find(".list-items-details-name a")
           .attr("href")
-          .replace("https://rmanga.app/", "");
+          .replace(`${baseURL}/`, "");
         const cover = $(this).find(".list-items-details-img img").attr("src");
         const rating = $(this)
           .find(
